@@ -5,8 +5,13 @@ import DefaultButton from '../DefaultButton'
 import { PlayCircleIcon } from 'lucide-react'
 
 const MainForm = () => {
+
+  function handleCreateNewTask(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+  }
+
   return (
-    <form className="form">
+    <form className="form" onSubmit={handleCreateNewTask}>
       <div className="formRow">
         <DefaultInput
           labelText="Qualquer coisa"
