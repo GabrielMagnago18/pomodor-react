@@ -6,10 +6,16 @@ import { PlayCircleIcon } from 'lucide-react'
 import { useRef } from 'react'
 import type { TaskModel } from '../../models/TaskModel'
 import { useTaskContext } from '../../contexts/TaskContext/useTaskContext'
+import getNextCycle from '../../utils/getNextCycle'
+import getNextCycleType from '../../utils/getNextCycleType'
+import formatSecondsToMinutes from '../../utils/formatSecondsToMinutes'
 
 const MainForm = () => {
-  const { setState } = useTaskContext();
+  const { state, setState } = useTaskContext();
   const taskNameInput = useRef<HTMLInputElement>(null);
+
+  const nextCycle = getNextCycle(state.currentCycle);
+  const nextCycleType = getNextCycleType(nextCycle);
 
   function handleCreateNewTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -30,7 +36,7 @@ const MainForm = () => {
       staartDate: Date.now(),
       completeDate: null,
       interruptedDate: null,
-      duration: 1,
+      duration: state.config[nextCycleType],
       type: 'workTime',
     }
 
@@ -41,9 +47,9 @@ const MainForm = () => {
         ...prevState,
         config: { ...prevState.config },
         activeTask: newTask,
-        currentCycle: 1, // validar depois
+        currentCycle: nextCycle,
         secondsRemaining,
-        formattedSecondRemaining: '00:00', // colocar a função de tempo dps 
+        formattedSecondRemaining: formatSecondsToMinutes(secondsRemaining),
         tasks: [...prevState.tasks, newTask]
       }
     })
